@@ -3,17 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doodle Love.exe</title>
+    <title>Doodle Love.exe [REMASTERED]</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nosifer&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nosifer&family=Press+Start+2P&display=swap');
 
         body {
             margin: 0;
             padding: 0;
-            background-color: #000;
+            background-color: #050505;
             overflow: hidden;
             font-family: 'Fredoka One', cursive;
             user-select: none;
+            color: white;
+        }
+
+        /* --- CRT EFEECT (КРАСА) --- */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        body::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: radial-gradient(circle, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%);
+            z-index: 999;
+            pointer-events: none;
         }
 
         /* --- ЕКРАНИ --- */
@@ -21,114 +43,199 @@
             position: absolute;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            display: none; /* Ховаємо всі екрани за замовчуванням */
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s;
         }
 
-        .active { display: flex !important; flex-direction: column; align-items: center; justify-content: center; }
+        .active { display: flex !important; }
+
+        /* --- КНОПКИ --- */
+        button {
+            border: 4px solid #fff;
+            background: transparent;
+            color: #fff;
+            padding: 15px 30px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0px #ff4757;
+            transition: transform 0.1s;
+        }
+        button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #ff4757; }
+        button:hover { background: #ff4757; }
 
         /* --- ЗАГРУЗКА --- */
-        #loadingScreen { background: #fdfcf0; }
-        .loader-container { width: 60%; height: 30px; border: 3px solid #000; padding: 5px; position: relative; overflow: visible; }
+        #loadingScreen { background: #111; color: #ff4757; }
+        .loader-container { 
+            width: 70%; height: 40px; border: 4px solid #ff4757; 
+            padding: 4px; position: relative; box-shadow: 0 0 15px #ff4757; 
+        }
         .loader-bar {
             width: 0%; height: 100%; background: #ff4757;
-            transition: width 0.2s linear;
+            box-shadow: 0 0 10px #ff4757;
+            transition: width 0.1s linear;
         }
-        .load-text { margin-top: 20px; font-size: 24px; color: #000; }
+        .load-text { margin-top: 20px; font-family: 'Press Start 2P'; font-size: 14px; color: #fff; text-shadow: 2px 2px #ff4757; }
 
         /* --- DOODLE МЕНЮ --- */
         #doodleMenu { 
-            background-image: linear-gradient(#e1e8ed 1px, transparent 1px), linear-gradient(90deg, #e1e8ed 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-color: #fdfcf0;
+            background: #fdfcf0; 
+            color: #333;
         }
-        h1.title { color: #ff4757; font-size: 50px; margin-bottom: 20px; text-shadow: 3px 3px 0px #2f3542; }
-        .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .char-card {
-            border: 4px solid #dfe4ea; padding: 10px; cursor: pointer; background: white; width: 100px; height: 120px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        /* Сітка як в зошиті */
+        #doodleMenu::before {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+            background-image: linear-gradient(#9ab 1px, transparent 1px), linear-gradient(90deg, #9ab 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+            opacity: 0.5;
         }
-        .char-card img { width: 60px; height: 60px; object-fit: contain; }
-        .char-card.crossed { background: #000; border: 4px solid red; }
-        .char-card.crossed img { display: none; }
-        .char-card.crossed span { color: red; font-family: 'Nosifer', cursive; font-size: 10px; }
         
-        #btnPlay { margin-top: 20px; padding: 15px 40px; font-size: 24px; background: #2ed573; border: none; border-radius: 50px; cursor: pointer; color: white; font-family: 'Fredoka One'; pointer-events: none; opacity: 0.5; }
-
-        /* --- ГЛЮКИ --- */
-        .glitch-body { animation: shakeBody 0.1s infinite; filter: invert(1); }
-        @keyframes shakeBody {
-            0% { transform: translate(2px, 2px) rotate(0deg); }
-            25% { transform: translate(-2px, -2px) rotate(-1deg); }
-            50% { transform: translate(-2px, 2px) rotate(1deg); }
-            75% { transform: translate(2px, -2px) rotate(0deg); }
-            100% { transform: translate(1px, -1px) rotate(0deg); }
+        h1.title { 
+            color: #ff4757; font-size: 40px; margin-bottom: 30px; 
+            text-shadow: 4px 4px 0px #2f3542; font-family: 'Fredoka One'; 
+            transform: rotate(-2deg);
         }
+        
+        .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .char-card {
+            border: 3px solid #333; padding: 10px; cursor: pointer; background: white; 
+            width: 110px; height: 140px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .char-card:hover { transform: scale(1.05) rotate(2deg); }
+        .char-card img { width: 70px; height: 70px; object-fit: contain; }
+        .char-card span { margin-top: 10px; color: #333; font-weight: bold; }
+        
+        .char-card.crossed { 
+            background: #000; border-color: red; 
+            animation: shake 0.5s infinite;
+        }
+        .char-card.crossed img { display: none; }
+        .char-card.crossed span { color: red; font-family: 'Nosifer'; font-size: 12px; }
+
+        #btnPlay { margin-top: 30px; opacity: 0.5; pointer-events: none; background: #ccc; box-shadow: none; border-color: #999; }
+        #btnPlay.ready { opacity: 1; pointer-events: auto; background: #2ed573; border-color: #fff; box-shadow: 4px 4px 0 #222; animation: pulse 1s infinite; }
 
         /* --- ІНСТРУКЦІЯ --- */
-        #instrScreen { background: rgba(0,0,0,0.9); color: white; text-align: center; }
-        .instr-box { border: 2px dashed red; padding: 20px; background: #fff; color: #000; max-width: 80%; }
-        .scary-text { font-family: 'Nosifer', cursive; color: red; font-size: 30px; }
-
-        /* --- SCREAMER --- */
-        #screamer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; z-index: 9999; display: none;
+        #instrScreen { background: rgba(0,0,0,0.95); }
+        .instr-box { 
+            border: 4px dashed #ff4757; padding: 40px; background: #fff; color: #000; 
+            max-width: 80%; text-align: center; transform: rotate(1deg);
         }
-        #screamer img { width: 100%; height: 100%; object-fit: cover; }
+        .scary-text { font-family: 'Nosifer', cursive; color: red !important; font-size: 35px; text-shadow: 2px 2px 0 #000; animation: shakeBody 0.2s infinite; }
 
-        /* --- FLAPPY LOVE --- */
-        #flappyScreen { background: linear-gradient(135deg, #330000 0%, #000 100%); }
-        .blood-text { font-family: 'Nosifer', cursive; color: darkred; font-size: 40px; }
+        /* --- ГЕЙМПЛЕЙ (CANVAS) --- */
+        #gameScreen { background: #fdfcf0; }
 
-        /* --- TIC TAC LOVE --- */
-        #ticTacScreen { background: #0f0c29; color: white; }
-        .grid-100 {
-            display: grid;
-            grid-template-columns: repeat(100, 1fr);
-            width: 95vw;
-            height: 95vw;
-            max-height: 90vh;
-            border: 1px solid red;
+        /* --- FLAPPY --- */
+        #flappyMenu { background: #333; }
+        #flappyScreen { background: #4a0000; }
+        .blood-text { font-family: 'Nosifer'; color: #ff0000; font-size: 40px; text-shadow: 0 0 10px #000; text-align: center; }
+
+        /* --- TIC TAC TOE --- */
+        #ticTacScreen { background: #0f0c29; }
+        .grid-container {
+            width: 90vw; height: 90vw; max-width: 500px; max-height: 500px;
+            display: grid; grid-template-columns: repeat(10, 1fr); /* 10x10 для початку, щоб не лагало */
+            gap: 1px; border: 2px solid red; background: red;
         }
-        .cell { border: 1px solid #333; font-size: 4px; display: flex; align-items: center; justify-content: center; color: red; cursor: crosshair; }
-        .cell:hover { background: red; }
+        .cell { background: #000; color: red; display: flex; align-items: center; justify-content: center; font-size: 8px; cursor: pointer; }
+        .cell:hover { background: #300; }
 
         /* --- CHESS --- */
-        #chessScreen { background: #222; }
-        #chessBoard { width: 300px; height: 300px; background: white; display: grid; grid-template-columns: repeat(8, 1fr); }
-        .chess-cell { width: 100%; height: 100%; border: 1px solid #000; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
-        .black-cell { background: #779556; }
-        .white-cell { background: #ebecd0; }
+        #chessScreen { background: #111; }
+        #chessBoard { 
+            width: 320px; height: 320px; border: 10px solid #444; 
+            display: grid; grid-template-columns: repeat(8, 1fr); 
+        }
+        .chess-cell { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; }
+        .black-cell { background: #779556; color: black; }
+        .white-cell { background: #ebecd0; color: black; }
 
         /* --- FINALE --- */
         #finalScreen { background: white; overflow: hidden; }
-        .heroes-lineup { display: flex; gap: 20px; position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%); }
-        .hero-stand { width: 80px; height: 80px; }
+        .heroes-lineup { 
+            display: flex; gap: 10px; position: absolute; bottom: 20%; left: 50%; 
+            transform: translateX(-50%); z-index: 10;
+        }
+        .hero-stand { width: 70px; height: 70px; filter: drop-shadow(2px 2px 0 #000); }
         
         #bossContainer {
-            position: absolute; bottom: 20%; left: -600px; /* Start off screen */
-            width: 500px; height: 500px;
-            transition: left 5s linear;
+            position: absolute; bottom: 20%; right: -500px; /* Start off screen right */
+            width: 400px; height: 400px;
+            transition: right 4s ease-out; /* Плавний виїзд */
+            z-index: 11;
         }
         #bossImg { width: 100%; height: 100%; object-fit: contain; }
         
         .fart-gas {
-            position: absolute; bottom: 0; left: -50px; width: 250px; height: 250px;
-            background: radial-gradient(circle, rgba(50,205,50,0.8) 0%, rgba(0,0,0,0) 70%);
+            position: absolute; bottom: 10px; left: 0px; width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(50,255,50,0.9) 0%, rgba(0,0,0,0) 70%);
             opacity: 0; transform: scale(0.1);
             pointer-events: none;
+            mix-blend-mode: multiply;
         }
         
-        @keyframes gasExpand {
-            0% { opacity: 0; transform: scale(0.1); }
-            50% { opacity: 0.8; transform: scale(1.2); }
-            100% { opacity: 0; transform: scale(2); }
+        /* Частинки розбиття */
+        .shard {
+            position: absolute;
+            width: 20px; height: 20px;
+            background-color: #000; /* або колір боса */
+            background-image: url('Boss.png'); /* Спробуємо взяти текстуру */
+            background-size: 400px 400px; /* Розмір оригінального боса */
+            pointer-events: none;
         }
 
-        #winImg { position: fixed; top:0; left:0; width:100%; height:100%; object-fit: contain; display: none; background: #000; }
+        #winImg { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            object-fit: contain; display: none; background: #000; z-index: 20;
+            animation: fadeIn 2s;
+        }
 
-        /* --- КНОПКА СТАРТ (Щоб активувати аудіо) --- */
-        #startOverlay { background: black; color: white; z-index: 10000; cursor: pointer; }
+        /* --- SCREAMER OVERLAY --- */
+        #screamer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 10000; display: none;
+        }
+        #screamer img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            animation: zoomShake 0.2s infinite;
+        }
+
+        /* --- АНІМАЦІЇ --- */
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 50% { transform: translate(-1px, -1px) rotate(-1deg); } 100% { transform: translate(1px, -1px) rotate(1deg); } }
+        @keyframes shakeBody { 
+            0% { transform: translate(5px, 0); } 
+            25% { transform: translate(-5px, 5px); }
+            50% { transform: translate(0, -5px); }
+            75% { transform: translate(5px, 5px); }
+            100% { transform: translate(0, 0); }
+        }
+        @keyframes zoomShake {
+            0% { transform: scale(1) translate(0,0); }
+            50% { transform: scale(1.2) translate(10px, -10px); }
+            100% { transform: scale(1.1) translate(-5px, 5px); }
+        }
+        @keyframes gasExpand {
+            0% { opacity: 0; transform: scale(0.1) rotate(0deg); }
+            50% { opacity: 0.9; transform: scale(1.5) rotate(180deg); }
+            100% { opacity: 0; transform: scale(2.5) rotate(360deg); }
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Глючний текст */
+        .glitch-text {
+            position: relative;
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
 
     </style>
 </head>
@@ -137,12 +244,15 @@
     <audio id="musicMp3" src="Music.mp3" loop></audio>
     <audio id="fightMp3" src="Fight.mp3"></audio>
     <audio id="fartMp3" src="Fart.mp3"></audio>
-    <div id="startOverlay" class="screen active" onclick="initGame()">
-        <h1 style="font-family: 'Nosifer'; color: red;">НАТИСНИ ЩОБ ПОЧАТИ</h1>
+    <audio id="lolMp3" src="LOL.mp3"></audio>
+    <audio id="breakMp3" src="Break.mp3"></audio>
+
+    <div id="startOverlay" class="screen active" style="background:black; z-index:20000; cursor:pointer;" onclick="initGame()">
+        <h1 style="font-family: 'Nosifer'; color: red; font-size: 30px; text-align: center;">НАТИСНИ ЩОБ ПОМЕРТИ<br><span style="font-size:14px; color:white; font-family:'Press Start 2P'">ВИ ПОМРЕТЕ😈!</span></h1>
     </div>
 
     <div id="loadingScreen" class="screen">
-        <h2 class="load-text" id="loadText">LOADING... 0%</h2>
+        <h2 class="load-text" id="loadText">INITIALIZING SYSTEM... 0%</h2>
         <div class="loader-container">
             <div class="loader-bar" id="loadBar"></div>
         </div>
@@ -151,53 +261,54 @@
     <div id="doodleMenu" class="screen">
         <h1 class="title" id="doodleTitle">Doodle Love</h1>
         <div class="char-grid">
-            <div class="char-card" onclick="glitchChar(this, 'Tito')"><img src="Tito.png"><span>Tito</span></div>
-            <div class="char-card" onclick="glitchChar(this, 'Smartik')"><img src="Smartik.png"><span>Smartik</span></div>
-            <div class="char-card" onclick="glitchChar(this, 'Junior')"><img src="Junior.png"><span>Junior</span></div>
-            <div class="char-card" onclick="glitchChar(this, 'Fil')"><img src="Fil.png"><span>Fil</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Tito.png"><span>Tito</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Smartik.png"><span>Smartik</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Junior.png"><span>Junior</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Fil.png"><span>Fil</span></div>
         </div>
         <button id="btnPlay" onclick="toInstruction()">ГРАТИ</button>
     </div>
 
     <div id="instrScreen" class="screen">
         <div class="instr-box" id="instrBox">
-            <h2 id="instrTitle">Як грати</h2>
-            <p id="instrText">Нахиляй телефон або тисни стрілочки.<br>Уникай монстрів!</p>
-            <button id="realPlayBtn" style="background: #2ed573; color: white; padding: 10px 20px; border:none; font-size: 20px; cursor: pointer;" onclick="startDoodleGame()">ГРАТИ</button>
+            <h2 id="instrTitle" style="font-family: 'Fredoka One'; color: #333;">ПРАВИЛА</h2>
+            <p id="instrText" style="font-size: 18px;">Керуй нахилом телефону.<br>Не падай вниз!</p>
+            <button id="realPlayBtn" onclick="handleInstrClick(event)">ПОЧАТИ ГРУ</button>
         </div>
     </div>
 
-    <div id="gameScreen" class="screen" style="background: #fdfcf0;">
+    <div id="gameScreen" class="screen">
         <canvas id="doodleCanvas"></canvas>
+        <div style="position: absolute; top: 20px; left: 20px; font-family:'Press Start 2P'; color:black; font-size: 12px;">SCORE: <span id="fakeScore">0</span></div>
     </div>
 
-    <div id="flappyMenu" class="screen" style="background: #a6c1ee;">
-        <h1 style="color:white; font-family:'Nosifer'">F̶l̶a̶p̶p̶y̶ ̶D̶e̶a̶t̶h̶</h1>
+    <div id="flappyMenu" class="screen">
+        <h1 style="color:white; font-family:'Nosifer'; font-size: 30px;">F̶l̶a̶p̶p̶y̶ ̶D̶e̶a̶t̶h̶</h1>
         <div class="char-grid">
-            <div class="char-card" onclick="startFlappyHorror()"><img src="Killer.png"><span>???</span></div>
-            <div class="char-card" onclick="startFlappyHorror()"><img src="Tito.png"><span>Tito</span></div>
+            <div class="char-card" style="background:#000; border-color:red;" onclick="startFlappyHorror()"><img src="Killer.png"><span>???</span></div>
+            <div class="char-card" style="background:#555;" onclick="startFlappyHorror()"><img src="Tito.png"><span>Tito</span></div>
         </div>
     </div>
 
     <div id="flappyScreen" class="screen">
         <div class="blood-text">GET READY TO DIE</div>
-        <button onclick="flappyScream()" style="margin-top:50px; padding:20px; background:red; border:none; color:white; font-size:30px;">ГРАТИ</button>
+        <button onclick="flappyScream()" style="margin-top:50px; background:red; border:none; color:white;">ГРАТИ</button>
     </div>
 
     <div id="ticTacScreen" class="screen">
-        <div style="display:flex; justify-content:space-between; width:90%;">
-            <h2>Player: ?</h2>
-            <h2>Enemy: ?</h2>
+        <div style="display:flex; justify-content:space-between; width:90%; color: white; font-family: 'Press Start 2P'; margin-bottom: 20px;">
+            <h2>YOU: X</h2>
+            <h2>EVIL: O</h2>
         </div>
-        <button onclick="startTicTacGrid()">ДАЛІ</button>
+        <button onclick="startTicTacGrid()">START MATCH</button>
     </div>
 
-    <div id="ticTacGridScreen" class="screen">
-        <div class="grid-100" id="megaGrid"></div>
+    <div id="ticTacGridScreen" class="screen" style="background: black;">
+        <div class="grid-container" id="megaGrid"></div>
     </div>
 
     <div id="chessScreen" class="screen">
-        <h1 style="color:white;">CHESS 666</h1>
+        <h1 style="color:white; font-family:'Nosifer'; margin-bottom: 20px;">CHESS 666</h1>
         <div id="chessBoard"></div>
     </div>
 
@@ -220,336 +331,342 @@
     </div>
 
     <script>
-        // --- УТИЛІТИ ---
+        // --- СИСТЕМНІ ЗМІННІ ---
+        let audioCtx;
+        
         function getEl(id) { return document.getElementById(id); }
         function show(id) { 
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             getEl(id).classList.add('active'); 
         }
-        function playScreamSound() {
-            // Генеруємо жахливий звук програмно, щоб гарантовано працювало
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(100, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(8000, ctx.currentTime + 0.1); // Вереск вгору
-            osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.5);
-            
-            // Шум для брудності звуку
-            const bufferSize = ctx.sampleRate * 2; 
-            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = Math.random() * 2 - 1;
-            }
-            const noise = ctx.createBufferSource();
-            noise.buffer = buffer;
-            
-            osc.connect(gain);
-            noise.connect(gain);
-            gain.connect(ctx.destination);
-            
-            gain.gain.setValueAtTime(1, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 2);
-            
-            osc.start();
-            noise.start();
-            setTimeout(() => { osc.stop(); noise.stop(); }, 2000);
+
+        // --- ГЕНЕРАТОР ЗВУКУ (Скрімер v2.0 - страшніший) ---
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
 
-        // --- ЕТАП 1: ЗАПУСК ---
+        function playSound(type) {
+            if (!audioCtx) initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const distortion = audioCtx.createWaveShaper();
+
+            // Дисонанс
+            osc1.type = 'sawtooth';
+            osc1.frequency.setValueAtTime(100, audioCtx.currentTime);
+            osc1.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.5); // Підйом
+
+            osc2.type = 'square';
+            osc2.frequency.setValueAtTime(110, audioCtx.currentTime); // Трохи зсунута частота
+            osc2.frequency.linearRampToValueAtTime(850, audioCtx.currentTime + 0.5);
+
+            gain.gain.setValueAtTime(1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.0);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc1.start();
+            osc2.start();
+            osc1.stop(audioCtx.currentTime + 1.0);
+            osc2.stop(audioCtx.currentTime + 1.0);
+        }
+
+        function playExternalAudio(id) {
+            const el = getEl(id);
+            if(el) {
+                el.volume = 1.0;
+                el.currentTime = 0;
+                el.play().catch(e => console.log("Audio play error", e));
+            }
+        }
+
+        // --- ЕТАП 1: СТАРТ ---
         function initGame() {
+            initAudio();
             show('loadingScreen');
             startLoading();
         }
 
-        // --- ЕТАП 2: БОЖЕВІЛЬНА ЗАГРУЗКА ---
+        // --- ЕТАП 2: ЗАГРУЗКА ---
         function startLoading() {
             const bar = getEl('loadBar');
             const txt = getEl('loadText');
             let progress = 0;
             
-            // Нормальна частина
             let interval = setInterval(() => {
-                progress += 1;
+                progress += 2;
                 bar.style.width = progress + '%';
-                txt.innerText = `LOADING... ${progress}%`;
+                txt.innerText = `INITIALIZING... ${progress}%`;
 
-                if (progress > 90) {
+                if (progress > 100) {
                     clearInterval(interval);
-                    startCrazyLoading();
+                    txt.innerText = "SYSTEM ERROR";
+                    txt.style.color = "red";
+                    bar.style.background = "red";
+                    setTimeout(() => {
+                        show('doodleMenu');
+                        playExternalAudio('musicMp3');
+                    }, 1000);
                 }
             }, 50);
         }
 
-        function startCrazyLoading() {
-            const bar = getEl('loadBar');
-            const txt = getEl('loadText');
-            let steps = 0;
-
-            let crazyInt = setInterval(() => {
-                steps++;
-                // Глюки загрузки
-                if (steps < 20) {
-                    let randomW = Math.floor(Math.random() * 200) - 50; // Від -50% до 150%
-                    bar.style.width = randomW + '%';
-                    bar.style.transition = 'width 0.05s';
-                    txt.innerText = `L0AD1NG..?? ${Math.random()}`;
-                } 
-                // Виліт за екран
-                else if (steps === 20) {
-                    bar.style.width = '300%'; // Дуже довго вправо
-                }
-                else if (steps === 25) {
-                    bar.style.transition = 'width 1s';
-                    bar.style.width = '-500%'; // Дуже довго вліво
-                }
-                else if (steps === 30) {
-                    document.body.classList.add('glitch-body'); // Тряска екрану
-                    txt.innerText = "FATAL ERROR SYSTEM FAILURE";
-                    txt.style.color = "red";
-                }
-                else if (steps > 40) {
-                    clearInterval(crazyInt);
-                    document.body.classList.remove('glitch-body');
-                    show('doodleMenu');
-                    playMusic();
-                }
-            }, 200);
-        }
-
-        function playMusic() {
-            const music = getEl('musicMp3');
-            music.volume = 0.5;
-            music.play().catch(e => console.log("Music blocked"));
-        }
-
-        // --- ЕТАП 3: DOODLE МЕНЮ (ПІДМІНА) ---
-        let clickedChars = 0;
-        
-        function glitchChar(el, name) {
+        // --- ЕТАП 3: МЕНЮ ---
+        let crossedCount = 0;
+        function glitchChar(el) {
             if (el.classList.contains('crossed')) return;
-            
             el.classList.add('crossed');
-            // Генерація "глючних" символів
-            let glitchText = "";
-            for(let i=0; i<10; i++) glitchText += String.fromCharCode(0x25A0 + Math.random()*50);
-            el.querySelector('span').innerText = glitchText;
+            playSound(); // Глюк звук
+            crossedCount++;
 
-            clickedChars++;
-            if (clickedChars === 4) {
-                // Поява Вбивці
+            if (crossedCount === 4) {
                 setTimeout(() => {
-                    el.innerHTML = `<img src="Killer.png" style="display:block; width:100%; height:100%;">`;
-                    el.classList.remove('crossed');
-                    el.style.border = "4px solid #000";
-                    getEl('btnPlay').style.opacity = "1";
-                    getEl('btnPlay').style.background = "#000";
-                    getEl('btnPlay').style.pointerEvents = "auto";
-                    getEl('doodleTitle').innerText = "D00d1e D3ATH";
+                    getEl('doodleTitle').innerText = "D00DLE D3ATH";
+                    getEl('doodleTitle').style.fontFamily = "Nosifer";
+                    const btn = getEl('btnPlay');
+                    btn.classList.add('ready');
+                    btn.innerText = "ГРАТИ АБО ПОМЕРТИ";
                 }, 500);
             }
         }
 
         function toInstruction() {
+            if (crossedCount < 4) return; // Не пускаємо поки не "зламав" усіх
             show('instrScreen');
         }
 
-        // --- ІНСТРУКЦІЯ ТА ЗМІНА ---
-        getEl('instrBox').addEventListener('click', function(e) {
-            if (e.target.tagName !== 'BUTTON') {
-                // Якщо клікнути по інструкції (але не по кнопці спочатку)
-                // Але за сценарієм клік на "ГРАТИ" змінює текст
-            }
-        });
-        
-        // Перехоплюємо кнопку "Грати" в інструкції
-        let instrClickCount = 0;
-        getEl('realPlayBtn').onclick = function(e) {
-            e.stopPropagation();
-            if (instrClickCount === 0) {
-                // Перший клік - змінюється текст
-                getEl('instrTitle').innerText = "HELP ME!";
-                getEl('instrTitle').classList.add('scary-text');
-                getEl('instrText').innerHTML = "RUN! <br> HE IS HERE! <br> DON'T PLAY!";
-                getEl('instrText').classList.add('scary-text');
-                this.innerText = "DIE";
-                this.style.background = "red";
-                instrClickCount++;
-            } else {
-                // Другий клік - запуск
-                startGamePlay();
-            }
-        };
+        let instrPhase = 0;
+        function handleInstrClick(e) {
+            const btn = e.target;
+            const title = getEl('instrTitle');
+            const text = getEl('instrText');
 
-        // --- ЕТАП 4: ГЕЙМПЛЕЙ + СКРІМЕР ---
-        function startGamePlay() {
+            if (instrPhase === 0) {
+                title.innerText = "ТІКАЙ ЗВІДСИ";
+                title.classList.add('scary-text');
+                text.innerHTML = "ВІН ВЖЕ ТУТ<br>НЕ ГРАЙ У ЦЮ ГРУ";
+                text.style.fontFamily = "Nosifer";
+                text.style.color = "red";
+                btn.innerText = "Я ХОЧУ ПОМЕРТИ";
+                btn.style.background = "black";
+                btn.style.borderColor = "red";
+                playSound();
+                instrPhase++;
+            } else {
+                startDoodleGame();
+            }
+        }
+
+        // --- ЕТАП 4: DOODLE GAMEPLAY ---
+        function startDoodleGame() {
             show('gameScreen');
             const canvas = getEl('doodleCanvas');
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
-            // Простий рендер
-            let playerY = canvas.height - 100;
-            let vy = -10;
-            const killerImg = new Image();
-            killerImg.src = "Killer.png";
+            let score = 0;
+            let playerY = canvas.height / 2;
+            let dir = 1;
 
-            function loop() {
-                ctx.clearRect(0,0,canvas.width, canvas.height);
-                playerY += vy;
-                vy += 0.5; // гравітація
-                if (playerY > canvas.height) { playerY = canvas.height; vy = -15; }
-
-                ctx.drawImage(killerImg, canvas.width/2 - 25, playerY, 50, 50);
+            const loop = setInterval(() => {
+                ctx.clearRect(0,0, canvas.width, canvas.height);
                 
-                // Платформи
-                ctx.fillStyle = "green";
-                for(let i=0; i<5; i++) {
-                    ctx.fillRect(canvas.width/2 - 50, i*150 + 100, 100, 20);
+                // Малюємо платформи
+                ctx.fillStyle = "#888";
+                for(let i=0; i<6; i++) {
+                    ctx.fillRect(50, i * 120 + 50, 100, 15);
+                    ctx.fillRect(canvas.width - 150, i * 120 + 100, 100, 15);
                 }
-                
-                requestAnimationFrame(loop);
-            }
-            loop();
 
-            // Таймер до скрімера
+                // Малюємо гравця (простий квадрат поки що)
+                playerY += (2 * dir);
+                if (playerY > canvas.height/2 + 50) dir = -1;
+                if (playerY < canvas.height/2 - 50) dir = 1;
+
+                ctx.fillStyle = "red";
+                ctx.beginPath();
+                ctx.arc(canvas.width/2, playerY, 20, 0, Math.PI*2);
+                ctx.fill();
+
+                score += 123;
+                getEl('fakeScore').innerText = score;
+
+            }, 16);
+
+            // Скрімер через 4 секунди
             setTimeout(() => {
-                // Зум
-                canvas.style.transition = "transform 3s ease-in";
-                canvas.style.transform = "scale(5)"; // Zoom на гравця
-                
-                setTimeout(() => {
-                    doScreamer(() => {
-                        // Після скрімера - перехід на Флеппі
-                        startFlappyPhase();
-                    });
-                }, 3000);
-
-            }, 1000);
+                clearInterval(loop);
+                doScreamer(() => {
+                    show('flappyMenu');
+                });
+            }, 4000);
         }
 
-        function doScreamer(callback) {
+        function doScreamer(cb) {
             const sc = getEl('screamer');
             sc.style.display = 'block';
-            playScreamSound();
+            playSound();
+            document.body.style.animation = "shakeBody 0.1s infinite";
             
-            // Тряска
-            document.body.classList.add('glitch-body');
-
             setTimeout(() => {
                 sc.style.display = 'none';
-                document.body.classList.remove('glitch-body');
-                if (callback) callback();
-            }, 1000); // 1 сек скрімера
+                document.body.style.animation = "";
+                if(cb) cb();
+            }, 1500); // 1.5 сек скрімера
         }
 
-        // --- ЕТАП 5: FLAPPY PHASE ---
-        function startFlappyPhase() {
-            document.body.classList.add('glitch-body'); // Глюки залишаються
-            show('flappyMenu');
-        }
-
+        // --- ЕТАП 5: FLAPPY ---
         function startFlappyHorror() {
-            // Всі пропадають, екран крові
             show('flappyScreen');
         }
-
         function flappyScream() {
             doScreamer(() => {
-                startTicTacPhase();
+                show('ticTacScreen');
             });
         }
 
         // --- ЕТАП 6: TIC TAC TOE ---
-        function startTicTacPhase() {
-            document.body.classList.remove('glitch-body');
-            show('ticTacScreen');
-        }
-
         function startTicTacGrid() {
             show('ticTacGridScreen');
             const grid = getEl('megaGrid');
             grid.innerHTML = '';
-            // 100x100 = 10000 клітинок
-            for(let i=0; i<2000; i++) { // Зробимо менше щоб не завис браузер на мобілці, але візуально багато
+            // Створюємо 100 клітинок
+            for(let i=0; i<100; i++) {
                 let d = document.createElement('div');
                 d.className = 'cell';
                 d.onclick = function() {
-                   this.innerText = "X";
-                   setTimeout(() => {
-                       doScreamer(() => {
-                           startChessPhase();
-                       });
-                   }, 200);
+                    this.innerText = "X";
+                    this.style.background = "#fff";
+                    // Випадковий скрімер при кліку
+                    setTimeout(() => {
+                         doScreamer(() => {
+                             startChess();
+                         });
+                    }, 300);
                 };
                 grid.appendChild(d);
             }
-            // Хай буде 2000 клітинок, бо 10000 це жорстко для рендеру
-            grid.style.gridTemplateColumns = "repeat(50, 1fr)";
         }
 
         // --- ЕТАП 7: CHESS ---
-        function startChessPhase() {
+        function startChess() {
             show('chessScreen');
             const board = getEl('chessBoard');
+            board.innerHTML = '';
             let isBlack = false;
             for(let i=0; i<64; i++) {
                 let d = document.createElement('div');
                 d.className = 'chess-cell ' + (isBlack ? 'black-cell' : 'white-cell');
-                // Додамо фігури
-                if (i<16) d.innerText = "♟";
-                if (i>47) d.innerText = "♙";
+                if (i < 16) d.innerText = "♟"; // Пішаки ворога
+                if (i > 47) d.innerText = "♙"; // Наші
                 
                 d.onclick = function() {
                     doScreamer(() => {
                         startFinale();
                     });
-                }
+                };
                 
                 board.appendChild(d);
                 if ((i+1)%8 !== 0) isBlack = !isBlack;
             }
         }
 
-        // --- ЕТАП 8: ФІНАЛ З БОСОМ ---
+        // --- ЕТАП 8: FINAL BOSS (ОНОВЛЕНО) ---
         function startFinale() {
             show('finalScreen');
             getEl('musicMp3').pause();
-            
-            const fightMusic = getEl('fightMp3');
-            fightMusic.play();
+            playExternalAudio('fightMp3'); // Музика битви
 
             const bossCont = getEl('bossContainer');
             
-            // Бос виїжджає
+            // 1. Бос виїжджає (через 0.5с)
             setTimeout(() => {
-                bossCont.style.left = "20%"; // Виїжджає на центр (приблизно)
-            }, 100);
+                // Виїжджає на позицію right: 20%
+                bossCont.style.right = "20%";
+            }, 500);
 
-            // Через 5 сек (коли доїхав)
+            // 2. Час до ПУКА (коли доїхав, десь через 4с)
             setTimeout(() => {
-                fightMusic.pause();
-                fightMusic.currentTime = 0;
+                // Зупиняємо музику битви
+                getEl('fightMp3').pause();
                 
                 // ПУК
-                const fart = getEl('fartMp3');
-                fart.play();
+                playExternalAudio('fartMp3');
                 
                 const gas = getEl('greenGas');
-                gas.style.animation = "gasExpand 2s forwards";
+                gas.style.animation = "gasExpand 4s forwards"; // Газ пішов
 
-                
-                // Через 2 сек розсипається
+                // 3. ЗАМЕРЗАЄМО (Freeze) і LOL
                 setTimeout(() => {
-                    bossCont.style.display = 'none'; // Зник
-                    // Перемога
-                    getEl('winImg').style.display = 'block';
-                }, 2000);
+                    // Заморожуємо анімацію газу (візуально)
+                    gas.style.animationPlayState = 'paused';
+                    
+                    // Граємо LOL
+                    playExternalAudio('lolMp3');
 
-            }, 5100);
+                    // Чекаємо 3 секунди
+                    setTimeout(() => {
+                        // 4. РОЗБИТТЯ (Shatter)
+                        playExternalAudio('breakMp3');
+                        bossShatterEffect(); // Функція розбиття
+                        
+                        // Ховаємо оригінального боса
+                        getEl('bossImg').style.display = 'none';
+                        gas.style.display = 'none';
+
+                        // 5. КІНЕЦЬ (через 1с після розбиття)
+                        setTimeout(() => {
+                            getEl('winImg').style.display = 'block';
+                        }, 1000);
+
+                    }, 3000); // 3 секунди паузи
+
+                }, 1000); // Пауза через 1с після початку пука (щоб газ встиг трохи з'явитися)
+
+            }, 4500);
+        }
+
+        // Ефект розбиття на шматочки
+        function bossShatterEffect() {
+            const container = getEl('bossContainer');
+            const rect = container.getBoundingClientRect();
+            
+            // Створюємо 50 шматочків
+            for(let i=0; i<50; i++) {
+                const shard = document.createElement('div');
+                shard.className = 'shard';
+                // Випадкова позиція всередині контейнера
+                const x = Math.random() * rect.width;
+                const y = Math.random() * rect.height;
+                shard.style.left = x + 'px';
+                shard.style.top = y + 'px';
+                
+                // Зміщення background для ефекту пазла (спрощено)
+                shard.style.backgroundPosition = `-${x}px -${y}px`;
+
+                container.appendChild(shard);
+
+                // Анімація розльоту
+                // Випадковий вектор руху
+                const destX = (Math.random() - 0.5) * 1000;
+                const destY = (Math.random() - 0.5) * 1000;
+                const rotate = Math.random() * 720;
+
+                // Застосовуємо перехід
+                shard.style.transition = "all 1s ease-out";
+                
+                // Hack для запуску анімації
+                setTimeout(() => {
+                    shard.style.transform = `translate(${destX}px, ${destY}px) rotate(${rotate}deg)`;
+                    shard.style.opacity = 0;
+                }, 10);
+            }
         }
 
     </script>
