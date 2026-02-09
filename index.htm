@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doodle Love.exe [REMASTERED]</title>
+    <title>Doodle Love.exe [BOSS UPDATE]</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nosifer&family=Press+Start+2P&display=swap');
 
@@ -15,6 +15,7 @@
             font-family: 'Fredoka One', cursive;
             user-select: none;
             color: white;
+            touch-action: none; /* Важливо для свайпів */
         }
 
         /* --- CRT EFEECT (КРАСА) --- */
@@ -86,7 +87,6 @@
             background: #fdfcf0; 
             color: #333;
         }
-        /* Сітка як в зошиті */
         #doodleMenu::before {
             content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
             background-image: linear-gradient(#9ab 1px, transparent 1px), linear-gradient(90deg, #9ab 1px, transparent 1px);
@@ -143,7 +143,7 @@
         #ticTacScreen { background: #0f0c29; }
         .grid-container {
             width: 90vw; height: 90vw; max-width: 500px; max-height: 500px;
-            display: grid; grid-template-columns: repeat(10, 1fr); /* 10x10 для початку, щоб не лагало */
+            display: grid; grid-template-columns: repeat(10, 1fr); 
             gap: 1px; border: 2px solid red; background: red;
         }
         .cell { background: #000; color: red; display: flex; align-items: center; justify-content: center; font-size: 8px; cursor: pointer; }
@@ -160,17 +160,17 @@
         .white-cell { background: #ebecd0; color: black; }
 
         /* --- FINALE --- */
-        #finalScreen { background: white; overflow: hidden; }
+        #finalScreen { background: white; overflow: hidden; position: relative; }
         .heroes-lineup { 
-            display: flex; gap: 10px; position: absolute; bottom: 20%; left: 50%; 
+            display: flex; gap: 10px; position: absolute; bottom: 10%; left: 50%; 
             transform: translateX(-50%); z-index: 10;
+            transition: left 0.1s linear; /* Плавний рух */
         }
-        .hero-stand { width: 70px; height: 70px; filter: drop-shadow(2px 2px 0 #000); }
+        .hero-stand { width: 60px; height: 60px; filter: drop-shadow(2px 2px 0 #000); }
         
         #bossContainer {
-            position: absolute; bottom: 20%; right: -500px; /* Start off screen right */
-            width: 400px; height: 400px;
-            transition: right 4s ease-out; /* Плавний виїзд */
+            position: absolute; bottom: 20%; right: -500px; 
+            width: 300px; height: 300px;
             z-index: 11;
         }
         #bossImg { width: 100%; height: 100%; object-fit: contain; }
@@ -183,20 +183,50 @@
             mix-blend-mode: multiply;
         }
         
-        /* Частинки розбиття */
         .shard {
-            position: absolute;
-            width: 20px; height: 20px;
-            background-color: #000; /* або колір боса */
-            background-image: url('Boss.png'); /* Спробуємо взяти текстуру */
-            background-size: 400px 400px; /* Розмір оригінального боса */
-            pointer-events: none;
+            position: absolute; width: 20px; height: 20px;
+            background-color: #000; background-image: url('Boss.png'); 
+            background-size: 400px 400px; pointer-events: none;
         }
 
         #winImg { 
             position: fixed; top:0; left:0; width:100%; height:100%; 
             object-fit: contain; display: none; background: #000; z-index: 20;
             animation: fadeIn 2s;
+        }
+
+        /* --- BOSS FIGHT STYLES (NEW) --- */
+        #redWarning {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(255,0,0,0.9); z-index: 100;
+            display: none; align-items: center; justify-content: center;
+            flex-direction: column;
+        }
+        #redWarning h1 { font-family: 'Nosifer'; color: black; text-align: center; font-size: 30px; }
+
+        .boss-ui {
+            position: absolute; top: 0; left: 0; width: 100%; padding: 10px;
+            display: none; justify-content: space-between; align-items: flex-start;
+            z-index: 50; box-sizing: border-box;
+        }
+        .boss-hp-frame {
+            width: 60%; height: 30px; border: 3px solid white; background: black;
+            position: absolute; left: 50%; transform: translateX(-50%);
+        }
+        .boss-hp-fill {
+            width: 100%; height: 100%; background: red; transition: width 0.2s;
+        }
+        .player-hp { font-size: 24px; text-shadow: 2px 2px 0 #000; }
+
+        .bullet {
+            position: absolute; width: 15px; height: 15px; background: yellow;
+            border-radius: 50%; box-shadow: 0 0 10px orange;
+            pointer-events: none; z-index: 15;
+        }
+        
+        .enemy-proj {
+            position: absolute; width: 40px; height: 40px; 
+            object-fit: contain; z-index: 15;
         }
 
         /* --- SCREAMER OVERLAY --- */
@@ -212,30 +242,11 @@
         /* --- АНІМАЦІЇ --- */
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 50% { transform: translate(-1px, -1px) rotate(-1deg); } 100% { transform: translate(1px, -1px) rotate(1deg); } }
-        @keyframes shakeBody { 
-            0% { transform: translate(5px, 0); } 
-            25% { transform: translate(-5px, 5px); }
-            50% { transform: translate(0, -5px); }
-            75% { transform: translate(5px, 5px); }
-            100% { transform: translate(0, 0); }
-        }
-        @keyframes zoomShake {
-            0% { transform: scale(1) translate(0,0); }
-            50% { transform: scale(1.2) translate(10px, -10px); }
-            100% { transform: scale(1.1) translate(-5px, 5px); }
-        }
-        @keyframes gasExpand {
-            0% { opacity: 0; transform: scale(0.1) rotate(0deg); }
-            50% { opacity: 0.9; transform: scale(1.5) rotate(180deg); }
-            100% { opacity: 0; transform: scale(2.5) rotate(360deg); }
-        }
+        @keyframes shakeBody { 0% { transform: translate(5px, 0); } 25% { transform: translate(-5px, 5px); } 50% { transform: translate(0, -5px); } 75% { transform: translate(5px, 5px); } 100% { transform: translate(0, 0); } }
+        @keyframes zoomShake { 0% { transform: scale(1) translate(0,0); } 50% { transform: scale(1.2) translate(10px, -10px); } 100% { transform: scale(1.1) translate(-5px, 5px); } }
+        @keyframes gasExpand { 0% { opacity: 0; transform: scale(0.1) rotate(0deg); } 50% { opacity: 0.9; transform: scale(1.5) rotate(180deg); } 100% { opacity: 0; transform: scale(2.5) rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Глючний текст */
-        .glitch-text {
-            position: relative;
-            animation: glitch-anim 2s infinite linear alternate-reverse;
-        }
+        .shake-screen { animation: shakeBody 0.1s infinite; }
 
     </style>
 </head>
@@ -246,6 +257,7 @@
     <audio id="fartMp3" src="Fart.mp3"></audio>
     <audio id="lolMp3" src="LOL.mp3"></audio>
     <audio id="breakMp3" src="Break.mp3"></audio>
+    <audio id="deathMp3" src="Death.mp3"></audio>
 
     <div id="startOverlay" class="screen active" style="background:black; z-index:20000; cursor:pointer;" onclick="initGame()">
         <h1 style="font-family: 'Nosifer'; color: red; font-size: 30px; text-align: center;">НАТИСНИ ЩОБ ПОМЕРТИ<br><span style="font-size:14px; color:white; font-family:'Press Start 2P'">ВИ ПОМРЕТЕ😈!</span></h1>
@@ -313,16 +325,30 @@
     </div>
 
     <div id="finalScreen" class="screen">
-        <div class="heroes-lineup">
+        <div class="heroes-lineup" id="heroesContainer">
             <img src="Fil.png" class="hero-stand">
             <img src="Tito.png" class="hero-stand">
             <img src="Junior.png" class="hero-stand">
             <img src="Smartik.png" class="hero-stand">
         </div>
-        <div id="bossContainer">
+        
+        <div id="bossContainer" style="transition: right 4s ease-out;">
             <img src="Boss.png" id="bossImg">
             <div class="fart-gas" id="greenGas"></div>
         </div>
+
+        <div id="bossBattleUI" class="boss-ui">
+            <div class="player-hp" id="playerHPText">❤️❤️❤️</div>
+            <div class="boss-hp-frame">
+                <div class="boss-hp-fill" id="bossHPBar"></div>
+            </div>
+            <div style="font-family:'Press Start 2P'; font-size:12px; position:absolute; right:10px; top:10px; color:red;">BOSS: 500 HP</div>
+        </div>
+
+        <div id="redWarning">
+            <h1 id="warningMsg"></h1>
+        </div>
+
         <img src="Win.png" id="winImg">
     </div>
 
@@ -340,7 +366,7 @@
             getEl(id).classList.add('active'); 
         }
 
-        // --- ГЕНЕРАТОР ЗВУКУ (Скрімер v2.0 - страшніший) ---
+        // --- ГЕНЕРАТОР ЗВУКУ (Скрімер v2.0) ---
         function initAudio() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
@@ -352,15 +378,13 @@
             const osc1 = audioCtx.createOscillator();
             const osc2 = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            const distortion = audioCtx.createWaveShaper();
 
-            // Дисонанс
             osc1.type = 'sawtooth';
             osc1.frequency.setValueAtTime(100, audioCtx.currentTime);
-            osc1.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.5); // Підйом
+            osc1.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.5); 
 
             osc2.type = 'square';
-            osc2.frequency.setValueAtTime(110, audioCtx.currentTime); // Трохи зсунута частота
+            osc2.frequency.setValueAtTime(110, audioCtx.currentTime); 
             osc2.frequency.linearRampToValueAtTime(850, audioCtx.currentTime + 0.5);
 
             gain.gain.setValueAtTime(1, audioCtx.currentTime);
@@ -421,7 +445,7 @@
         function glitchChar(el) {
             if (el.classList.contains('crossed')) return;
             el.classList.add('crossed');
-            playSound(); // Глюк звук
+            playSound(); 
             crossedCount++;
 
             if (crossedCount === 4) {
@@ -436,7 +460,7 @@
         }
 
         function toInstruction() {
-            if (crossedCount < 4) return; // Не пускаємо поки не "зламав" усіх
+            if (crossedCount < 4) return; 
             show('instrScreen');
         }
 
@@ -476,30 +500,22 @@
 
             const loop = setInterval(() => {
                 ctx.clearRect(0,0, canvas.width, canvas.height);
-                
-                // Малюємо платформи
                 ctx.fillStyle = "#888";
                 for(let i=0; i<6; i++) {
                     ctx.fillRect(50, i * 120 + 50, 100, 15);
                     ctx.fillRect(canvas.width - 150, i * 120 + 100, 100, 15);
                 }
-
-                // Малюємо гравця (простий квадрат поки що)
                 playerY += (2 * dir);
                 if (playerY > canvas.height/2 + 50) dir = -1;
                 if (playerY < canvas.height/2 - 50) dir = 1;
-
                 ctx.fillStyle = "red";
                 ctx.beginPath();
                 ctx.arc(canvas.width/2, playerY, 20, 0, Math.PI*2);
                 ctx.fill();
-
                 score += 123;
                 getEl('fakeScore').innerText = score;
-
             }, 16);
 
-            // Скрімер через 4 секунди
             setTimeout(() => {
                 clearInterval(loop);
                 doScreamer(() => {
@@ -518,37 +534,25 @@
                 sc.style.display = 'none';
                 document.body.style.animation = "";
                 if(cb) cb();
-            }, 1500); // 1.5 сек скрімера
+            }, 1500); 
         }
 
         // --- ЕТАП 5: FLAPPY ---
-        function startFlappyHorror() {
-            show('flappyScreen');
-        }
-        function flappyScream() {
-            doScreamer(() => {
-                show('ticTacScreen');
-            });
-        }
+        function startFlappyHorror() { show('flappyScreen'); }
+        function flappyScream() { doScreamer(() => { show('ticTacScreen'); }); }
 
         // --- ЕТАП 6: TIC TAC TOE ---
         function startTicTacGrid() {
             show('ticTacGridScreen');
             const grid = getEl('megaGrid');
             grid.innerHTML = '';
-            // Створюємо 100 клітинок
             for(let i=0; i<100; i++) {
                 let d = document.createElement('div');
                 d.className = 'cell';
                 d.onclick = function() {
                     this.innerText = "X";
                     this.style.background = "#fff";
-                    // Випадковий скрімер при кліку
-                    setTimeout(() => {
-                         doScreamer(() => {
-                             startChess();
-                         });
-                    }, 300);
+                    setTimeout(() => { doScreamer(() => { startChess(); }); }, 300);
                 };
                 grid.appendChild(d);
             }
@@ -563,110 +567,339 @@
             for(let i=0; i<64; i++) {
                 let d = document.createElement('div');
                 d.className = 'chess-cell ' + (isBlack ? 'black-cell' : 'white-cell');
-                if (i < 16) d.innerText = "♟"; // Пішаки ворога
-                if (i > 47) d.innerText = "♙"; // Наші
-                
-                d.onclick = function() {
-                    doScreamer(() => {
-                        startFinale();
-                    });
-                };
-                
+                if (i < 16) d.innerText = "♟"; 
+                if (i > 47) d.innerText = "♙"; 
+                d.onclick = function() { doScreamer(() => { startFinale(); }); };
                 board.appendChild(d);
                 if ((i+1)%8 !== 0) isBlack = !isBlack;
             }
         }
 
-        // --- ЕТАП 8: FINAL BOSS (ОНОВЛЕНО) ---
+        // --- ЕТАП 8: BOSS FIGHT INTRO ---
         function startFinale() {
             show('finalScreen');
             getEl('musicMp3').pause();
-            playExternalAudio('fightMp3'); // Музика битви
+            playExternalAudio('fightMp3'); 
 
             const bossCont = getEl('bossContainer');
-            
-            // 1. Бос виїжджає (через 0.5с)
-            setTimeout(() => {
-                // Виїжджає на позицію right: 20%
-                bossCont.style.right = "20%";
-            }, 500);
+            setTimeout(() => { bossCont.style.right = "20%"; }, 500);
 
-            // 2. Час до ПУКА (коли доїхав, десь через 4с)
             setTimeout(() => {
-                // Зупиняємо музику битви
                 getEl('fightMp3').pause();
-                
-                // ПУК
                 playExternalAudio('fartMp3');
-                
                 const gas = getEl('greenGas');
-                gas.style.animation = "gasExpand 4s forwards"; // Газ пішов
-
-                // 3. ЗАМЕРЗАЄМО (Freeze) і LOL
+                gas.style.animation = "gasExpand 4s forwards"; 
+                
                 setTimeout(() => {
-                    // Заморожуємо анімацію газу (візуально)
                     gas.style.animationPlayState = 'paused';
-                    
-                    // Граємо LOL
                     playExternalAudio('lolMp3');
 
-                    // Чекаємо 3 секунди
                     setTimeout(() => {
-                        // 4. РОЗБИТТЯ (Shatter)
                         playExternalAudio('breakMp3');
-                        bossShatterEffect(); // Функція розбиття
-                        
-                        // Ховаємо оригінального боса
+                        bossShatterEffect(); 
                         getEl('bossImg').style.display = 'none';
                         gas.style.display = 'none';
 
-                        // 5. КІНЕЦЬ (через 1с після розбиття)
+                        // !!! ТУТ ЗМІНИ - ЗАМІСТЬ ПЕРЕМОГИ ПОЧИНАЄТЬСЯ ПЕКЛО !!!
                         setTimeout(() => {
-                            getEl('winImg').style.display = 'block';
-                        }, 1000);
+                            prepareRealFight();
+                        }, 2000);
 
-                    }, 3000); // 3 секунди паузи
-
-                }, 1000); // Пауза через 1с після початку пука (щоб газ встиг трохи з'явитися)
-
+                    }, 3000); 
+                }, 1000); 
             }, 4500);
         }
 
-        // Ефект розбиття на шматочки
         function bossShatterEffect() {
             const container = getEl('bossContainer');
             const rect = container.getBoundingClientRect();
-            
-            // Створюємо 50 шматочків
             for(let i=0; i<50; i++) {
                 const shard = document.createElement('div');
                 shard.className = 'shard';
-                // Випадкова позиція всередині контейнера
                 const x = Math.random() * rect.width;
                 const y = Math.random() * rect.height;
                 shard.style.left = x + 'px';
                 shard.style.top = y + 'px';
-                
-                // Зміщення background для ефекту пазла (спрощено)
                 shard.style.backgroundPosition = `-${x}px -${y}px`;
-
                 container.appendChild(shard);
-
-                // Анімація розльоту
-                // Випадковий вектор руху
                 const destX = (Math.random() - 0.5) * 1000;
                 const destY = (Math.random() - 0.5) * 1000;
                 const rotate = Math.random() * 720;
-
-                // Застосовуємо перехід
                 shard.style.transition = "all 1s ease-out";
-                
-                // Hack для запуску анімації
                 setTimeout(() => {
                     shard.style.transform = `translate(${destX}px, ${destY}px) rotate(${rotate}deg)`;
                     shard.style.opacity = 0;
                 }, 10);
             }
+        }
+
+        // =================================================================
+        // ================== НОВИЙ КОД: БОС ФАЙТ ==========================
+        // =================================================================
+
+        let bossHP = 500;
+        let playerHP = 6; // Пів-сердечка за удар = 6 ударів (3 серця)
+        let isFighting = false;
+        let heroesX = 50; // У відсотках
+        let bossX = 50;
+        let bossDir = 1;
+        let bossPhase = 'normal';
+
+        function prepareRealFight() {
+            // 1. Прибираємо осколки
+            document.querySelectorAll('.shard').forEach(e => e.remove());
+            
+            // 2. Червоний екран + Текст
+            const red = getEl('redWarning');
+            const msg = getEl('warningMsg');
+            red.style.display = 'flex';
+            red.style.opacity = 1;
+            
+            const fullText = "Ви відчуваєте що приближається повна СРАКА!";
+            let idx = 0;
+            let typeInterval = setInterval(() => {
+                msg.textContent += fullText[idx];
+                idx++;
+                if(idx >= fullText.length) clearInterval(typeInterval);
+            }, 100);
+
+            // 3. Через деякий час рестарт боса
+            setTimeout(() => {
+                red.style.transition = "opacity 2s";
+                red.style.opacity = 0;
+                setTimeout(() => { red.style.display = 'none'; }, 2000);
+                
+                // Музика
+                playExternalAudio('fightMp3');
+                
+                // Бос вертається
+                const bossImg = getEl('bossImg');
+                bossImg.style.display = 'block';
+                getEl('bossContainer').style.transition = "none"; // Вимикаємо CSS перехід для JS руху
+                getEl('bossContainer').style.right = "auto";
+                getEl('bossContainer').style.left = "50%";
+                getEl('bossContainer').style.top = "10%";
+                
+                // UI
+                getEl('bossBattleUI').style.display = 'flex';
+                
+                // Старт логіки
+                isFighting = true;
+                startBattleLoop();
+                startBossAttacks();
+                enableControls();
+                
+            }, 4000);
+        }
+
+        // --- УПРАВЛІННЯ ---
+        function enableControls() {
+            const heroes = getEl('heroesContainer');
+            // Прибираємо старий стиль центрування
+            heroes.style.transform = "translateX(-50%)"; 
+            heroes.style.position = "absolute";
+            heroes.style.left = "50%";
+
+            // ПК - Стрілки
+            window.addEventListener('keydown', (e) => {
+                if(!isFighting) return;
+                if(e.key === 'ArrowLeft') heroesX -= 5;
+                if(e.key === 'ArrowRight') heroesX += 5;
+                updateHeroPos();
+            });
+
+            // Мобілка/Миша - Свайп (слідкуй за курсором)
+            window.addEventListener('mousemove', moveHeroByTouch);
+            window.addEventListener('touchmove', moveHeroByTouch, {passive: false});
+
+            // Стрільба - Клік
+            window.addEventListener('mousedown', shootBullet);
+            window.addEventListener('touchstart', shootBullet);
+        }
+
+        function moveHeroByTouch(e) {
+            if(!isFighting) return;
+            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            heroesX = (clientX / window.innerWidth) * 100;
+            updateHeroPos();
+        }
+
+        function updateHeroPos() {
+            if(heroesX < 0) heroesX = 0;
+            if(heroesX > 100) heroesX = 100;
+            getEl('heroesContainer').style.left = heroesX + "%";
+        }
+
+        function shootBullet(e) {
+            if(!isFighting) return;
+            let targetX = e.touches ? e.touches[0].clientX : e.clientX;
+            let targetY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            // Створення кулі
+            const b = document.createElement('div');
+            b.className = 'bullet';
+            
+            // Початкова позиція (від героїв)
+            const heroRect = getEl('heroesContainer').getBoundingClientRect();
+            let startX = heroRect.left + heroRect.width/2;
+            let startY = heroRect.top;
+            
+            b.style.left = startX + 'px';
+            b.style.top = startY + 'px';
+            getEl('finalScreen').appendChild(b);
+
+            // Вектор руху
+            const dx = targetX - startX;
+            const dy = targetY - startY;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            const velX = (dx/dist) * 15; // Швидкість 15
+            const velY = (dy/dist) * 15;
+
+            // Рух кулі
+            let bInterval = setInterval(() => {
+                let rect = b.getBoundingClientRect();
+                b.style.left = (rect.left + velX) + 'px';
+                b.style.top = (rect.top + velY) + 'px';
+
+                // Колізія з босом
+                const bossRect = getEl('bossImg').getBoundingClientRect();
+                if (rect.left < bossRect.right && rect.left + 15 > bossRect.left &&
+                    rect.top < bossRect.bottom && rect.top + 15 > bossRect.top) {
+                        damageBoss();
+                        b.remove();
+                        clearInterval(bInterval);
+                }
+
+                // Виліт за екран
+                if(rect.top < 0 || rect.top > window.innerHeight || rect.left < 0 || rect.left > window.innerWidth) {
+                    b.remove();
+                    clearInterval(bInterval);
+                }
+            }, 20);
+        }
+
+        function damageBoss() {
+            if(bossHP <= 0) return;
+            bossHP -= 50; // 10 hits to kill (500 / 50)
+            
+            // Оновлення полоски
+            const pct = (bossHP / 500) * 100;
+            getEl('bossHPBar').style.width = pct + "%";
+
+            if (bossHP <= 0) {
+                bossDieSequence();
+            }
+        }
+
+        function startBattleLoop() {
+            let loop = setInterval(() => {
+                if(!isFighting) { clearInterval(loop); return; }
+
+                // Рух боса
+                bossX += bossDir * 1; // Повільно
+                if(bossX > 80) bossDir = -1;
+                if(bossX < 10) bossDir = 1;
+                getEl('bossContainer').style.left = bossX + "%";
+
+            }, 20);
+        }
+
+        function startBossAttacks() {
+            let attackLoop = setInterval(() => {
+                if(!isFighting) { clearInterval(attackLoop); return; }
+                
+                // Створення снаряду
+                const types = ['Virus.png', 'Bug.png', 'Blue.png'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                
+                const p = document.createElement('img');
+                p.src = type;
+                p.className = 'enemy-proj';
+                
+                const bossRect = getEl('bossImg').getBoundingClientRect();
+                p.style.left = (bossRect.left + Math.random() * bossRect.width) + 'px';
+                p.style.top = bossRect.bottom + 'px';
+                getEl('finalScreen').appendChild(p);
+
+                // Рух снаряду вниз
+                let pInt = setInterval(() => {
+                    if(!isFighting) { p.remove(); clearInterval(pInt); return; }
+                    let top = parseFloat(p.style.top);
+                    p.style.top = (top + 5) + 'px'; // Швидкість падіння
+
+                    // Колізія з гравцем
+                    const heroRect = getEl('heroesContainer').getBoundingClientRect();
+                    const pRect = p.getBoundingClientRect();
+                    
+                    if(pRect.left < heroRect.right && pRect.right > heroRect.left &&
+                       pRect.top < heroRect.bottom && pRect.bottom > heroRect.top) {
+                           damagePlayer();
+                           p.remove();
+                           clearInterval(pInt);
+                    }
+
+                    if(top > window.innerHeight) {
+                        p.remove();
+                        clearInterval(pInt);
+                    }
+                }, 20);
+
+            }, 1000); // Раз в секунду (легко)
+        }
+
+        function damagePlayer() {
+            if(playerHP > 0) {
+                playerHP--;
+                updateHearts();
+            }
+        }
+
+        function updateHearts() {
+            const h = getEl('playerHPText');
+            // 6 хп = 3 серця. 
+            let heartsStr = "";
+            let full = Math.floor(playerHP / 2);
+            let half = playerHP % 2;
+            for(let i=0; i<full; i++) heartsStr += "❤️";
+            if(half) heartsStr += "💔";
+            
+            if(playerHP === 0) heartsStr = "💀";
+            h.innerText = heartsStr;
+
+            if(playerHP <= 0) {
+               // Гейм овер? Ну, про це не просили, хай грають вічно або рестарт
+               // Але зробимо екран червоним
+               document.body.style.background = "red";
+            }
+        }
+
+        function bossDieSequence() {
+            isFighting = false;
+            // Перетворення в ERROR
+            const bossImg = getEl('bossImg');
+            bossImg.src = "ERROR.png";
+            
+            // Стоп музика, звук смерті
+            getEl('fightMp3').pause();
+            playExternalAudio('deathMp3');
+
+            // Тряска
+            document.body.classList.add('shake-screen');
+            bossImg.style.animation = "shake 0.1s infinite";
+
+            // 3 секунди завмираємо
+            setTimeout(() => {
+                document.body.classList.remove('shake-screen');
+                bossShatterEffect(); // Знову розсипається
+                bossImg.style.display = 'none';
+                getEl('bossBattleUI').style.display = 'none';
+
+                // WIN
+                setTimeout(() => {
+                    getEl('winImg').style.display = 'block';
+                }, 1000);
+
+            }, 3000);
         }
 
     </script>
