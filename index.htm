@@ -260,7 +260,7 @@
     <audio id="deathMp3" src="Death.mp3"></audio>
 
     <div id="startOverlay" class="screen active" style="background:black; z-index:20000; cursor:pointer;" onclick="initGame()">
-        <h1 style="font-family: 'Nosifer'; color: red; font-size: 30px; text-align: center;">КРАЩЕ ВИХОДЬ ЗВІДСИ!<br><span style="font-size:14px; color:white; font-family:'Press Start 2P'">А ТО БУДЕ ПОГАНО!</span></h1>
+        <h1 style="font-family: 'Nosifer'; color: red; font-size: 30px; text-align: center;">НАТИСНИ ЩОБ ПОМЕРТИ<br><span style="font-size:14px; color:white; font-family:'Press Start 2P'">ВИ ПОМРЕТЕ😈!</span></h1>
     </div>
 
     <div id="loadingScreen" class="screen">
@@ -277,6 +277,7 @@
             <div class="char-card" onclick="glitchChar(this)"><img src="Smartik.png"><span>Smartik</span></div>
             <div class="char-card" onclick="glitchChar(this)"><img src="Junior.png"><span>Junior</span></div>
             <div class="char-card" onclick="glitchChar(this)"><img src="Fil.png"><span>Fil</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Milka.png"><span>Milka</span></div>
         </div>
         <button id="btnPlay" onclick="toInstruction()">ГРАТИ</button>
     </div>
@@ -303,7 +304,7 @@
     </div>
 
     <div id="flappyScreen" class="screen">
-        <div class="blood-text">GET READY TO *&^#*#</div>
+        <div class="blood-text">GET READY TO DIE</div>
         <button onclick="flappyScream()" style="margin-top:50px; background:red; border:none; color:white;">ГРАТИ</button>
     </div>
 
@@ -330,6 +331,7 @@
             <img src="Tito.png" class="hero-stand">
             <img src="Junior.png" class="hero-stand">
             <img src="Smartik.png" class="hero-stand">
+            <img src="Milka.png" class="hero-stand">
         </div>
         
         <div id="bossContainer" style="transition: right 4s ease-out;">
@@ -448,7 +450,7 @@
             playSound(); 
             crossedCount++;
 
-            if (crossedCount === 4) {
+            if (crossedCount === 5) {
                 setTimeout(() => {
                     getEl('doodleTitle').innerText = "D00DLE D3ATH";
                     getEl('doodleTitle').style.fontFamily = "Nosifer";
@@ -476,7 +478,7 @@
                 text.innerHTML = "ВІН ВЖЕ ТУТ<br>НЕ ГРАЙ У ЦЮ ГРУ";
                 text.style.fontFamily = "Nosifer";
                 text.style.color = "red";
-                btn.innerText = "Я ХОЧУ ВЕЛИКІ НЕПРИЄМНОСТІ";
+                btn.innerText = "Я ХОЧУ ПОМЕРТИ";
                 btn.style.background = "black";
                 btn.style.borderColor = "red";
                 playSound();
@@ -637,7 +639,7 @@
         // ================== НОВИЙ КОД: БОС ФАЙТ ==========================
         // =================================================================
 
-        let bossHP = 1000;
+        let bossHP = 500;
         let playerHP = 6; // Пів-сердечка за удар = 6 ударів (3 серця)
         let isFighting = false;
         let heroesX = 50; // У відсотках
@@ -905,7 +907,3 @@
     </script>
 </body>
 </html>
-
-
-
-
