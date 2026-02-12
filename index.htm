@@ -247,6 +247,22 @@
         @keyframes gasExpand { 0% { opacity: 0; transform: scale(0.1) rotate(0deg); } 50% { opacity: 0.9; transform: scale(1.5) rotate(180deg); } 100% { opacity: 0; transform: scale(2.5) rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .shake-screen { animation: shakeBody 0.1s infinite; }
+        
+        /* Стиль для подвійної картки в меню */
+.dual-images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.dual-images img {
+    width: 45px !important; /* Робимо їх трохи меншими, щоб влізли вдвох */
+    height: 45px !important;
+}
+.fil-milka-card span {
+    font-size: 10px; /* Трохи менший шрифт, щоб напис вліз в один рядок */
+    white-space: nowrap;
+}
 
     </style>
 </head>
@@ -276,8 +292,13 @@
             <div class="char-card" onclick="glitchChar(this)"><img src="Tito.png"><span>Tito</span></div>
             <div class="char-card" onclick="glitchChar(this)"><img src="Smartik.png"><span>Smartik</span></div>
             <div class="char-card" onclick="glitchChar(this)"><img src="Junior.png"><span>Junior</span></div>
-            <div class="char-card" onclick="glitchChar(this)"><img src="Fil.png"><span>Fil</span></div>
-            <div class="char-card" onclick="glitchChar(this)"><img src="Milka.png"><span>Milka</span></div>
+            <div class="char-card fil-milka-card" onclick="glitchChar(this)">
+    <div class="dual-images">
+        <img src="Fil.png">
+        <img src="Milka.png">
+    </div>
+    <span>FIL & MILKA</span>
+</div>
         </div>
         <button id="btnPlay" onclick="toInstruction()">ГРАТИ</button>
     </div>
@@ -450,7 +471,7 @@
             playSound(); 
             crossedCount++;
 
-            if (crossedCount === 5) {
+            if (crossedCount === 4) {
                 setTimeout(() => {
                     getEl('doodleTitle').innerText = "D00DLE D3ATH";
                     getEl('doodleTitle').style.fontFamily = "Nosifer";
