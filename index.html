@@ -96,31 +96,45 @@
         }
         
         h1.title { 
-            color: #ff4757; font-size: 40px; margin-bottom: 30px; 
+            color: #ff4757; font-size: 40px; margin-bottom: 15px; 
             text-shadow: 4px 4px 0px #2f3542; font-family: 'Fredoka One'; 
             transform: rotate(-2deg);
         }
         
-        .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .char-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
+            gap: 15px; 
+            max-height: 60vh; 
+            overflow-y: auto; 
+            width: 90%; 
+            max-width: 800px;
+            padding: 15px;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.6);
+            border: 3px dashed #333;
+            border-radius: 10px;
+        }
         .char-card {
             border: 3px solid #333; padding: 10px; cursor: pointer; background: white; 
-            width: 110px; height: 140px;
+            height: 140px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
             transition: transform 0.2s;
+            box-sizing: border-box;
         }
         .char-card:hover { transform: scale(1.05) rotate(2deg); }
         .char-card img { width: 70px; height: 70px; object-fit: contain; }
-        .char-card span { margin-top: 10px; color: #333; font-weight: bold; }
+        .char-card span { margin-top: 10px; color: #333; font-weight: bold; font-size: 12px; text-align: center; text-transform: uppercase; }
         
         .char-card.crossed { 
             background: #000; border-color: red; 
             animation: shake 0.5s infinite;
         }
         .char-card.crossed img { display: none; }
-        .char-card.crossed span { color: red; font-family: 'Nosifer'; font-size: 12px; }
+        .char-card.crossed span { color: red; font-family: 'Nosifer'; font-size: 10px; }
 
-        #btnPlay { margin-top: 30px; opacity: 0.5; pointer-events: none; background: #ccc; box-shadow: none; border-color: #999; }
+        #btnPlay { margin-top: 20px; opacity: 0.5; pointer-events: none; background: #ccc; box-shadow: none; border-color: #999; }
         #btnPlay.ready { opacity: 1; pointer-events: auto; background: #2ed573; border-color: #fff; box-shadow: 4px 4px 0 #222; animation: pulse 1s infinite; }
 
         /* --- ІНСТРУКЦІЯ --- */
@@ -162,11 +176,12 @@
         /* --- FINALE --- */
         #finalScreen { background: white; overflow: hidden; position: relative; }
         .heroes-lineup { 
-            display: flex; gap: 10px; position: absolute; bottom: 10%; left: 50%; 
+            display: flex; gap: 4px; position: absolute; bottom: 10%; left: 50%; 
             transform: translateX(-50%); z-index: 10;
             transition: left 0.1s linear; /* Плавний рух */
+            flex-wrap: wrap; max-width: 95vw; justify-content: center;
         }
-        .hero-stand { width: 60px; height: 60px; filter: drop-shadow(2px 2px 0 #000); }
+        .hero-stand { width: 35px; height: 35px; filter: drop-shadow(2px 2px 0 #000); }
         
         #bossContainer {
             position: absolute; bottom: 20%; right: -500px; 
@@ -286,20 +301,20 @@
         .teleport { animation: bossTP 0.3s forwards; }
 
         /* Стиль для подвійної картки в меню */
-.dual-images {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-}
-.dual-images img {
-    width: 45px !important; /* Робимо їх трохи меншими, щоб влізли вдвох */
-    height: 45px !important;
-}
-.fil-milka-card span {
-    font-size: 10px; /* Трохи менший шрифт, щоб напис вліз в один рядок */
-    white-space: nowrap;
-}
+        .dual-images {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+        .dual-images img {
+            width: 45px !important; /* Робимо їх трохи меншими, щоб влізли вдвох */
+            height: 45px !important;
+        }
+        .fil-milka-card span {
+            font-size: 10px; /* Трохи менший шрифт, щоб напис вліз в один рядок */
+            white-space: nowrap;
+        }
 
     </style>
 </head>
@@ -329,19 +344,36 @@
             <div class="char-card" onclick="glitchChar(this)"><img src="Tito.png"><span>Tito</span></div>
             <div class="char-card" onclick="glitchChar(this)"><img src="Smartik.png"><span>Smartik</span></div>
             <div class="char-card fil-milka-card" onclick="glitchChar(this)">
-    <div class="dual-images">
-        <img src="Junior.png">
-        <img src="Bark.png">
-    </div>
-    <span>JUNIOR & BARK</span>
-</div>
+                <div class="dual-images">
+                    <img src="Junior.png">
+                    <img src="Bark.png">
+                </div>
+                <span>JUNIOR & BARK</span>
+            </div>
             <div class="char-card fil-milka-card" onclick="glitchChar(this)">
-    <div class="dual-images">
-        <img src="Fil.png">
-        <img src="Milka.png">
-    </div>
-    <span>FIL & MILKA</span>
-</div>
+                <div class="dual-images">
+                    <img src="Fil.png">
+                    <img src="Milka.png">
+                </div>
+                <span>FIL & MILKA</span>
+            </div>
+            <!-- НОВІ 16 ГЕРОЇВ -->
+            <div class="char-card" onclick="glitchChar(this)"><img src="Persik.png"><span>Persik</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Spike.png"><span>Spike</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Alyonka.png"><span>Alyonka</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Lilu.png"><span>Lilu</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Manya.png"><span>Manya</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Liza.png"><span>Liza</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Grivna.png"><span>Grivna</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Ben.png"><span>Ben</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Goldi.png"><span>Goldi</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Raf.png"><span>Raf</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Veles.png"><span>Veles</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Masha.png"><span>Masha</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Brilliantik.png"><span>Brilliantik</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Richik.png"><span>Richik</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Shunya.png"><span>Shunya</span></div>
+            <div class="char-card" onclick="glitchChar(this)"><img src="Baks.png"><span>Baks</span></div>
         </div>
         <button id="btnPlay" onclick="toInstruction()">ГРАТИ</button>
     </div>
@@ -426,6 +458,23 @@
             <img src="Bark.png" class="hero-stand">
             <img src="Smartik.png" class="hero-stand">
             <img src="Milka.png" class="hero-stand">
+            <!-- Додані нові герої у фінальну команду -->
+            <img src="Persik.png" class="hero-stand">
+            <img src="Spike.png" class="hero-stand">
+            <img src="Alyonka.png" class="hero-stand">
+            <img src="Lilu.png" class="hero-stand">
+            <img src="Manya.png" class="hero-stand">
+            <img src="Liza.png" class="hero-stand">
+            <img src="Grivna.png" class="hero-stand">
+            <img src="Ben.png" class="hero-stand">
+            <img src="Goldi.png" class="hero-stand">
+            <img src="Raf.png" class="hero-stand">
+            <img src="Veles.png" class="hero-stand">
+            <img src="Masha.png" class="hero-stand">
+            <img src="Brilliantik.png" class="hero-stand">
+            <img src="Richik.png" class="hero-stand">
+            <img src="Shunya.png" class="hero-stand">
+            <img src="Baks.png" class="hero-stand">
         </div>
         
         <div id="bossContainer" style="transition: right 4s ease-out;">
@@ -544,7 +593,8 @@
             playSound(); 
             crossedCount++;
 
-            if (crossedCount === 4) {
+            // Перевірка на загальну кількість карток динамічно (4 оригінальні + 16 нових = 20)
+            if (crossedCount === 20) {
                 setTimeout(() => {
                     getEl('doodleTitle').innerText = "D00DLE D3ATH";
                     getEl('doodleTitle').style.fontFamily = "Nosifer";
@@ -556,7 +606,7 @@
         }
 
         function toInstruction() {
-            if (crossedCount < 4) return; 
+            if (crossedCount < 20) return; 
             show('instrScreen');
         }
 
